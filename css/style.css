@@ -94,10 +94,10 @@ img {
 .right {
   float: right !important; }
 
-.clearfix:before, .event-detail:before, .clearfix:after, .event-detail:after {
+.clearfix:before, .event-detail:before, .date-list:before, .clearfix:after, .event-detail:after, .date-list:after {
   content: " ";
   display: table; }
-.clearfix:after, .event-detail:after {
+.clearfix:after, .event-detail:after, .date-list:after {
   clear: both; }
 
 .hide {
@@ -6154,3 +6154,70 @@ th.hide-for-touch {
   top: 50%;
   width: 18px;
   z-index: 2; }
+
+.content_wrap {
+  padding-top: 0; }
+
+.date-list {
+  list-style-type: square; }
+
+.box {
+  display: block;
+  float: left;
+  height: 150px;
+  width: 150px;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  border-bottom: 3px solid #000;
+  font-weight: bold; }
+
+.box a {
+  display: block;
+  height: 96px;
+  width: 100%;
+  padding: 27px 17px;
+  color: #000; }
+
+.monthYear {
+  background-color: #149DEB;
+  text-transform: uppercase;
+  font-size: 24px;
+  cursor: default;
+  background-image: none; }
+
+.monthYear span {
+  letter-spacing: 2.5px; }
+
+.monthYear a.dateLink {
+  padding: 0;
+  color: #FFFFFF;
+  padding-top: 40px;
+  height: 110px;
+  width: 100%; }
+
+.box .theDay {
+  font-size: 45px;
+  line-height: 50px; }
+
+.box .theTitle {
+  font-size: 11px;
+  letter-spacing: 0.5px; }
+
+.box .theTitle span {
+  text-transform: uppercase;
+  display: inline-block;
+  padding: 2px 8px 0;
+  margin-bottom: 8px;
+  background: #808080;
+  color: #f8f8f8;
+  font-size: 9px; }
+
+header.entry-header h1, h1.tribe-events-page-title {
+  border-bottom: 2px solid #E40079;
+  color: #149DEB;
+  padding-bottom: 1.875rem;
+  margin-bottom: 0.9375rem; }
+
+#tribe-events-pg-template {
+  max-width: none; }

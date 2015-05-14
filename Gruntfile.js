@@ -24,6 +24,13 @@ module.exports = function(grunt) {
           spawn: false,
           livereload: true
         }
+      },
+      php: {
+        cwd: '.',
+        files: ['*.php'],
+        options: {
+          livereload: true
+        }
       }
     }
  
@@ -40,4 +47,6 @@ module.exports = function(grunt) {
     'Compiles all of the assets and copies the files to the build directory.', 
     [ 'clean', 'copy' ]
   );
+
+  grunt.registerTask('default', ['watch']);
 };

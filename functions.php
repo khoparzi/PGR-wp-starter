@@ -52,7 +52,7 @@ function wpstarter_child_scripts() {
 }
 add_action( 'wp_enqueue_scripts', 'wpstarter_child_scripts', 0);
 
-if (function_exists('register_sidebar')) {
+/*if (function_exists('register_sidebar')) {
         register_sidebar(array(
             'name' => 'Center Footerbar',
             'id'   => 'footerbar-center',
@@ -71,6 +71,6 @@ if (function_exists('register_sidebar')) {
         'before_title'  => '<h4>',
         'after_title'   => '</h4>'
     ));
-}
+}*/
 
 ?>
