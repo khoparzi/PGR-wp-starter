@@ -52,6 +52,14 @@ function wpstarter_child_scripts() {
 }
 add_action( 'wp_enqueue_scripts', 'wpstarter_child_scripts', 0);
 
+function wpforge_entry_meta_categories() {
+    // Translators: used between list items, there is a space after the comma.
+    /*$categories_list = get_the_category_list( __( ', ', 'wp-forge' ) );
+    if ( $categories_list ) {
+        echo '<div class="entry-meta-categories"><span class="categories-links">' . $categories_list . '</span></div>';
+    }*/
+}
+
 function expandingBoxHolder($attr, $content= null){
     global $item;
     global $count;
