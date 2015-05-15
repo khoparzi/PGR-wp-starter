@@ -52,25 +52,52 @@ function wpstarter_child_scripts() {
 }
 add_action( 'wp_enqueue_scripts', 'wpstarter_child_scripts', 0);
 
-/*if (function_exists('register_sidebar')) {
-        register_sidebar(array(
-            'name' => 'Center Footerbar',
-            'id'   => 'footerbar-center',
-            'before_widget' => '<div class="medium-3">',
-            'after_widget'  => '</div>',
-            'before_title'  => '<h4>',
-            'after_title'   => '</h4>'
-        ));
+function expandingBoxHolder($attr, $content= null){
+    global $item;
+    global $count;
+    global $newFlag;
+    $newFlag = $count;
+    $item++;
+    $default = array(
+          'style' => 'default'
+        );
+
+    $data = shortcode_atts($default, $attr);
+
+    $content = do_shortcode($content);
+
+    //return '<div class="panel-group '.$data['style'].'"  id="accordion-'. $item .'" role="tablist" aria-multiselectable="true">'.$content.'</div>';
+    return '<ul class="schedule-overview '.$data['style'].'">' . $content . '</ul>';
 }
-if (function_exists('register_sidebar')) {
-    register_sidebar(array(
-        'name' => 'Right Footerbar',
-        'id'   => 'footerbar-right',
-        'before_widget' => '<div>',
-        'after_widget'  => '</div>',
-        'before_title'  => '<h4>',
-        'after_title'   => '</h4>'
-    ));
-}*/
+
+function expandingBox_nested($attr, $content= null){
+    global $count;
+    global $item;
+    global $newFlag;
+
+    $default = array(
+        'time' => '',
+        'title' => 'Insert Your Title'
+        );
+    $data = shortcode_atts($default, $attr);
+  $content = do_shortcode($content);
+    $class = ( $count === $newFlag ) ? ' in' : '';
+    
+    $count++;
+
+    if ($data['time']) $title = '<b>' . $data['time'] . '</b></span><span>' . $data['title'];
+    else $title = $data['title'];
+
+   return '<li><div class="schedule-title"><span>' . $title .
+   '</span></div><div class="schedule-text">' . $content .
+   '</div><div class="marker-pin">
+        <div class="top"></div>
+        <div class="middle"></div>
+        <div class="bottom"></div>
+    </div></li>';
+}
+add_filter( 'the_content', 'shortcode_unautop' );
+add_shortcode('ex_box_holder','expandingBoxHolder');
+add_shortcode('ex_box','expandingBox_nested');
 
 ?>
