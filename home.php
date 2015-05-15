@@ -14,42 +14,6 @@
  * @since WP-Forge 5.5.1.8
  */
 
-	function khoparzi_events_list_the_date_headers() {
-
-		/* Month and year separators (on every month and year change) */
-
-		$show_headers = apply_filters( 'tribe_events_list_show_date_headers', true );
-
-		$html = '';
-
-		if ( $show_headers ) {
-
-			global $post, $wp_query;
-
-			$event_year        = tribe_get_start_date( $post, false, 'Y' );
-			$event_month       = tribe_get_start_date( $post, false, 'm' );
-			$month_year_format = tribe_get_option( 'monthAndYearFormat', 'F Y' );
-
-			if ( $wp_query->current_post > 0 ) {
-				$prev_post        = $wp_query->posts[$wp_query->current_post - 1];
-				$prev_event_year  = tribe_get_start_date( $prev_post, false, 'Y' );
-				$prev_event_month = tribe_get_start_date( $prev_post, false, 'm' );
-			}
-
-
-			/*
-			 * If the event month changed since the last event in the loop,
-			 * or is the same month but the year changed.
-			 *
-			 */
-			if ( $wp_query->current_post === 0 || ( $prev_event_month != $event_month || ( $prev_event_month == $event_month && $prev_event_year != $event_year ) ) ) {
-				$html .= sprintf( "<li class='box monthYear'><a class='dateLink'>%s</a></li>", tribe_get_start_date( $post, false, $month_year_format ) );
-			}
-
-			echo apply_filters( 'tribe_events_list_the_date_headers', $html, $event_month, $event_year );
-		}
-	}
-
 get_header(); ?>
 
 	<div id="content" class="medium-12 large-12 columns" role="main">
@@ -68,7 +32,13 @@ get_header(); ?>
 		<?php wp_reset_postdata(); ?>
 
     	<?php
-			$events = tribe_get_events( false, true);
+			$events = tribe_get_events(
+				array(
+					'start_date' => date( 'Y-m-d H:i:s', strtotime( '-1 week' ) ),
+					'end_date' => date( 'Y-m-d H:i:s', strtotime( '+16 week' ) )
+				),
+			true);
+			$prev_day = $prev_month = '';
     	?>
     	<h1 class="tribe-events-page-title"><?php echo tribe_get_events_title() ?></h1>
 
@@ -79,22 +49,50 @@ get_header(); ?>
 		<!-- #tribe-events-header -->
 
 		<ul class="block date-list">
-		<?php while ( $events->have_posts() ) : $events->the_post(); ?>
-
+			<?php while ( $events->have_posts() ) : $events->the_post(); ?>
+			<?php 
+					$curr_day = tribe_get_start_date( $post, false, 'Y-m-d' );
+					$curr_month = tribe_get_start_date( $post, false, 'Y-m' );
+			?>
 			<!-- Month / Year Headers -->
-			<?php khoparzi_events_list_the_date_headers(); ?>
+			<?php
+				
+				if ($prev_day != $curr_day) {
+					if ($prev_day != '') echo "</ul></li>";
+					if ($prev_month != $curr_month) {
+						echo '<li class="box monthYear">
+							<a class="dateLink" href="#month-year-link">
+								<span>'.tribe_get_start_date( $post, false, 'M' ).'</span><br>
+								'.tribe_get_start_date( $post, false, 'Y' ).'</a>
+						</li>';
+					}
+			?>
+				<!-- Day box -->
+				<li class="box">
+				<span class="theDay"><?php echo tribe_get_start_date( $post, false, 'd' ) ?></span>
+				<ul>
+				<?php } ?>
+			
+			
+				<li class="event">
+					<a class="url" href="<?php echo esc_url( tribe_get_event_link() ); ?>" title="<?php the_title() ?>" rel="bookmark">
+						<span class="theTitle"><?php the_title() ?></span>
+						<span class="updated published time-details">
+							<?php echo tribe_get_start_time( $post, false, 'U' ) ?> - 
+							<?php echo tribe_get_end_time( $post, false, 'U' ) ?>
+						</span>
+					</a>
+					<?php// echo "$prev_day - $curr_day" ?>
+				</li>
+			
 
-			<!-- Day box -->
-			<li class="box">
-				<a class="url" href="<?php echo esc_url( tribe_get_event_link() ); ?>" title="<?php the_title() ?>" rel="bookmark">
-					<?php the_title() ?>
-				<div class="updated published time-details">
-					<?php echo tribe_get_start_time( $post, false, 'U' ) ?> - 
-					<?php echo tribe_get_end_time( $post, false, 'U' ) ?>
-				</div>
-				</a>
-			</li>
-		<?php endwhile; ?>
+				<?php
+				$prev_day = $curr_day;
+				$prev_month = $curr_month;
+				?>
+			<?php endwhile; ?>
+			
+			<?php if ($prev_month) { echo "</ul></li>"; } ?>
 		</ul>
 	</div><!-- #content -->
 
