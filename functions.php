@@ -108,4 +108,15 @@ add_filter( 'the_content', 'shortcode_unautop' );
 add_shortcode('ex_box_holder','expandingBoxHolder');
 add_shortcode('ex_box','expandingBox_nested');
 
+// enable html markup in user profiles
+remove_filter('pre_user_description', 'wp_filter_kses');
+
+function load_pgr_quicktags() {
+ 
+    wp_enqueue_script( 'exbox-quicktags', get_stylesheet_directory_uri() . '/js/ex_box_quicktags.js' , array( 'quicktags' ) );
+ 
+}
+ 
+add_action( 'admin_enqueue_scripts', 'load_pgr_quicktags' );
+
 ?>
