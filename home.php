@@ -19,12 +19,13 @@ get_header(); ?>
 	<div id="content" class="medium-12 large-12 columns" role="main">
 
     	<?php if ( function_exists('yoast_breadcrumb') ) { yoast_breadcrumb('<p class="breadcrumbs">','</p>'); } ?>
-
+		<?php $post_count = 0; ?>
 		<?php if ( have_posts() ) : ?>
-			<?php while ( have_posts() ) : the_post(); ?>
-				<?php get_template_part( 'content', get_post_format() ); ?>
+			<div class="row grid">
+			<?php while ( have_posts() && $post_count < 4 ) : the_post(); ?>
+				<?php get_template_part( 'content', 'looped' ); $post_count++; ?>
 			<?php endwhile; ?>
-
+			</div>
 		<?php else : ?>
 			<?php get_template_part( 'content', 'none' ); ?>
 		<?php endif; // end have_posts() check ?>
@@ -34,8 +35,9 @@ get_header(); ?>
     	<?php
 			$events = tribe_get_events(
 				array(
+					'posts_per_page' => 20,
 					'start_date' => date( 'Y-m-d H:i:s', strtotime( '-1 week' ) ),
-					'end_date' => date( 'Y-m-d H:i:s', strtotime( '+16 week' ) )
+					'end_date' => date( 'Y-m-d H:i:s', strtotime( '+12 week' ) )
 				),
 			true);
 			$prev_day = $prev_month = '';
@@ -61,7 +63,7 @@ get_header(); ?>
 					if ($prev_day != '') echo "</ul></li>";
 					if ($prev_month != $curr_month) {
 						echo '<li class="box monthYear">
-							<a class="dateLink" href="#month-year-link">
+							<a class="dateLink" href="'. TribeEvents::instance()->getLink( 'month', tribe_get_start_date( $post, false, 'Y-m' ) ) . '">
 								<span>'.tribe_get_start_date( $post, false, 'M' ).'</span><br>
 								'.tribe_get_start_date( $post, false, 'Y' ).'</a>
 						</li>';
@@ -69,7 +71,7 @@ get_header(); ?>
 			?>
 				<!-- Day box -->
 				<li class="box">
-				<span class="theDay"><?php echo tribe_get_start_date( $post, false, 'd' ) ?></span>
+				<span class="theDay"><a href="<?php echo TribeEvents::instance()->getLink( 'day', tribe_get_start_date( $post, false, 'Y-m-d' ) ) ?>"><?php echo tribe_get_start_date( $post, false, 'd' ) ?></a></span>
 				<ul>
 				<?php } ?>
 			
