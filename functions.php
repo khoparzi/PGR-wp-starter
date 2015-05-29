@@ -40,7 +40,7 @@ function wpstarter_child_style() {
     wp_dequeue_style('wpforge');
     wp_enqueue_style( 'parent-style', get_template_directory_uri() . '/style.css', '', '3.0' );
     // wp_enqueue_style( 'child-style', get_stylesheet_uri(), array( 'parent-style' ), '3.0' );
-    wp_enqueue_style( 'child-style', get_stylesheet_directory_uri() . '/css/style.css', array( 'parent-style' ), '3.0' );
+    wp_enqueue_style( 'child-style', get_stylesheet_directory_uri() . '/css/style.css', array( 'parent-style' ), '0.2' );
 }
 add_action( 'wp_enqueue_scripts', 'wpstarter_child_style');
 
@@ -49,6 +49,7 @@ add_action( 'wp_enqueue_scripts', 'wpstarter_child_style');
  */
 function wpstarter_child_scripts() {
     wp_enqueue_script( 'wpstarter-js', get_stylesheet_directory_uri() . '/js/wpstarter-functions.js', array(), '3.0', true );
+    wp_enqueue_script( 'wpstarter-isotope', '//cdnjs.cloudflare.com/ajax/libs/jquery.isotope/2.2.0/isotope.pkgd.min.js' );
 }
 add_action( 'wp_enqueue_scripts', 'wpstarter_child_scripts', 0);
 
@@ -59,6 +60,22 @@ function wpforge_entry_meta_categories() {
         echo '<div class="entry-meta-categories"><span class="categories-links">' . $categories_list . '</span></div>';
     }*/
 }
+
+
+// enable html markup in user profiles
+// remove_filter('pre_user_description', 'wp_filter_kses');
+
+function add_custom_types_to_tax( $query ) {
+    if( is_category() || is_tag() && empty( $query->query_vars['suppress_filters'] ) ) {
+
+        // Get all your post types
+        $post_types = get_post_types();
+
+        $query->set( 'post_type', $post_types );
+        return $query;
+    }
+}
+add_filter( 'pre_get_posts', 'add_custom_types_to_tax' );
 
 function expandingBoxHolder($attr, $content= null){
     global $item;
@@ -74,7 +91,6 @@ function expandingBoxHolder($attr, $content= null){
 
     $content = do_shortcode($content);
 
-    //return '<div class="panel-group '.$data['style'].'"  id="accordion-'. $item .'" role="tablist" aria-multiselectable="true">'.$content.'</div>';
     return '<ul class="schedule-overview '.$data['style'].'">' . $content . '</ul>';
 }
 
@@ -88,7 +104,7 @@ function expandingBox_nested($attr, $content= null){
         'title' => 'Insert Your Title'
         );
     $data = shortcode_atts($default, $attr);
-  $content = do_shortcode($content);
+    $content = do_shortcode($content);
     $class = ( $count === $newFlag ) ? ' in' : '';
     
     $count++;
@@ -96,9 +112,9 @@ function expandingBox_nested($attr, $content= null){
     if ($data['time']) $title = '<b>' . $data['time'] . '</b></span><span>' . $data['title'];
     else $title = $data['title'];
 
-   return '<li><div class="schedule-title"><span>' . $title .
-   '</span></div><div class="schedule-text">' . $content .
-   '</div><div class="marker-pin">
+    return '<li><div class="schedule-title"><span>' . $title .
+    '</span></div><div class="schedule-text">' . $content .
+    '</div><div class="marker-pin">
         <div class="top"></div>
         <div class="middle"></div>
         <div class="bottom"></div>
@@ -107,9 +123,6 @@ function expandingBox_nested($attr, $content= null){
 add_filter( 'the_content', 'shortcode_unautop' );
 add_shortcode('ex_box_holder','expandingBoxHolder');
 add_shortcode('ex_box','expandingBox_nested');
-
-// enable html markup in user profiles
-remove_filter('pre_user_description', 'wp_filter_kses');
 
 function load_pgr_quicktags() {
  
